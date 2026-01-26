@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Leeto\YiiBlade;
 
 use Closure;
-use Leeto\YiiBlade\Config\BladeConfig;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory as ViewFactory;
@@ -17,14 +16,17 @@ use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
+use Leeto\YiiBlade\Config\BladeConfig;
 use ReflectionException;
 use Yiisoft\View\TemplateRendererInterface;
 use Yiisoft\View\ViewInterface;
 
 final class BladeRenderer implements TemplateRendererInterface
 {
+    private ?Factory $viewFactory = null;
+
     /**
-     * @var string[]
+     * @var list<string>
      */
     private array $paths = [];
 
@@ -48,7 +50,24 @@ final class BladeRenderer implements TemplateRendererInterface
     ) {}
 
     /**
-     * @param string[] $paths
+     * Reset state between requests in long-running applications.
+     *
+     * Should be called at the end of each request when using
+     * RoadRunner, Swoole, or similar persistent runtimes.
+     */
+    public function reset(): void
+    {
+        if ($this->viewFactory !== null) {
+            $this->viewFactory->flushState();
+            $this->viewFactory->flushStateIfDoneRendering();
+            $this->viewFactory = null;
+        }
+
+        Container::getInstance()->forgetInstances();
+    }
+
+    /**
+     * @param list<string> $paths
      */
     public function paths(array $paths): self
     {
@@ -143,15 +162,20 @@ final class BladeRenderer implements TemplateRendererInterface
      */
     public function renderTemplate(string $template, array $parameters): View
     {
+        if($this->viewFactory !== null) {
+            return $this->viewFactory->make($template, $parameters);
+        }
+
         $paths = $this->getPaths();
 
         $cachePath = $this->getCacheDir();
 
+        $filesystem = new Filesystem();
+
         $compiler = new BladeCompiler(
-            files: new Filesystem(),
+            files: $filesystem,
             cachePath: $cachePath,
         );
-
 
         foreach ($this->getComponentNamespaces() as $namespace => $prefix) {
             $compiler->componentNamespace($namespace, $prefix);
@@ -167,7 +191,7 @@ final class BladeRenderer implements TemplateRendererInterface
 
         $blade = new CompilerEngine(
             compiler: $compiler,
-            files: new Filesystem(),
+            files: $filesystem,
         );
 
         $engines = new EngineResolver();
@@ -176,7 +200,7 @@ final class BladeRenderer implements TemplateRendererInterface
         $factory = new Factory(
             engines: $engines,
             finder: new FileViewFinder(
-                files: new Filesystem(),
+                files: $filesystem,
                 paths: $paths,
                 extensions: ['blade.php'],
             ),
@@ -213,6 +237,8 @@ final class BladeRenderer implements TemplateRendererInterface
         });
 
         $destination = str_replace('.blade.php', '', basename($template));
+
+        $this->viewFactory = $factory;
 
         return $factory->make($destination, $parameters);
     }
