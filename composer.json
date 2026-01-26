@@ -1,0 +1,42 @@
+{
+    "name": "lee-to/yii-blade",
+    "type": "library",
+    "description": "Blade template engine support",
+    "keywords": [
+        "yii",
+        "blade"
+    ],
+    "homepage": "https://cutcode.dev",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/lee-to/yii-blade/issues?state=open",
+        "source": "https://github.com/lee-to/yii-blade"
+    },
+    "funding": [
+        {
+            "type": "boosty",
+            "url": "https://boosty.com/cutcode"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/view": "^12"
+    },
+    "autoload": {
+        "psr-4": {
+            "Leeto\\YiiBlade\\": "src"
+        }
+    },
+    "extra": {
+        "config-plugin-options": {
+            "source-directory": "config"
+        },
+        "config-plugin": {
+            "params": "params.php",
+            "di": "di.php"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
