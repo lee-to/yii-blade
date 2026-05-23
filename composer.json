@@ -20,12 +20,29 @@
     ],
     "require": {
         "php": "^8.2",
-        "illuminate/view": "^12"
+        "illuminate/view": "^12",
+        "yiisoft/definitions": "^3.4",
+        "yiisoft/view": "^12.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
     },
     "autoload": {
         "psr-4": {
             "Leeto\\YiiBlade\\": "src"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Leeto\\YiiBlade\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "coverage": [
+            "php -d xdebug.mode=coverage vendor/bin/phpunit --coverage-clover build/logs/clover.xml --coverage-text --colors=never",
+            "php tests/check-coverage.php build/logs/clover.xml"
+        ]
     },
     "extra": {
         "config-plugin-options": {

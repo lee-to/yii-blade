@@ -1,5 +1,7 @@
 # Blade Template Engine for Yii3
 
+[![Code Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](#)
+
 This package provides [Laravel Blade](https://laravel.com/docs/blade) template engine support for the **Yii3 framework**.
 
 ## Requirements
@@ -42,11 +44,11 @@ return [
             'default' => '@views',
             'admin' => '@views/admin',
         ],
-        'cache_dir' => 'runtime/cache/blade/views',
-        'component_namespaces' => [
+        'cachePath' => 'runtime/cache/blade/views',
+        'componentNamespaces' => [
             'App\\View\\Components' => 'x',
         ],
-        'anonymous_component_namespaces' => [
+        'anonymousComponentNamespaces' => [
             '@views/components' => 'x',
         ],
         'directives' => [
@@ -70,6 +72,45 @@ Create a Blade template in your views directory:
 ```
 
 The package automatically registers as a renderer for `.blade.php` files.
+
+## Layout
+
+Create a layout template:
+
+```blade
+{{-- views/layouts/main.blade.php --}}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>@yield('title', 'My application')</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Home</a>
+        </nav>
+    </header>
+
+    <main>
+        @yield('content')
+    </main>
+</body>
+</html>
+```
+
+Use it from a page template:
+
+```blade
+{{-- views/site/index.blade.php --}}
+@extends('layouts.main')
+
+@section('title', 'Home')
+
+@section('content')
+    <h1>Hello, {{ $name }}!</h1>
+@endsection
+```
 
 ## Custom Directives
 

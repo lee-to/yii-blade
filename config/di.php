@@ -12,9 +12,12 @@ return [
         'class' => BladeConfig::class,
         '__construct()' => [
             'paths' => $params['lee-to/yii-blade']['paths'],
-            'cacheDir' => $params['lee-to/yii-blade']['cache_dir'],
-            'componentNamespaces' => $params['lee-to/yii-blade']['component_namespaces'],
-            'anonymousComponentNamespaces' => $params['lee-to/yii-blade']['anonymous_component_namespaces'],
+            'cachePath' => $params['lee-to/yii-blade']['cachePath']
+                ?? $params['lee-to/yii-blade']['cache_dir'],
+            'componentNamespaces' => $params['lee-to/yii-blade']['componentNamespaces']
+                ?? $params['lee-to/yii-blade']['component_namespaces'],
+            'anonymousComponentNamespaces' => $params['lee-to/yii-blade']['anonymousComponentNamespaces']
+                ?? $params['lee-to/yii-blade']['anonymous_component_namespaces'],
             'directives' => $params['lee-to/yii-blade']['directives'],
         ],
     ],

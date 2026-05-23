@@ -8,13 +8,18 @@ use Leeto\YiiBlade\DirectiveInterface;
 
 final readonly class BladeConfig
 {
+    private string $cachePath;
+
     public function __construct(
         private array $paths = [],
-        private string $cacheDir = 'runtime/cache/blade/views',
+        ?string $cachePath = null,
         private array $componentNamespaces = [],
         private array $anonymousComponentNamespaces = [],
         private array $directives = [],
-    ) {}
+        ?string $cacheDir = null,
+    ) {
+        $this->cachePath = $cachePath ?? $cacheDir ?? 'runtime/cache/blade/views';
+    }
 
     /**
      * @return array<string, string>
@@ -26,7 +31,12 @@ final readonly class BladeConfig
 
     public function getCacheDir(): string
     {
-        return $this->cacheDir;
+        return $this->cachePath;
+    }
+
+    public function getCachePath(): string
+    {
+        return $this->cachePath;
     }
 
     /**

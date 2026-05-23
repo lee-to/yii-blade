@@ -14,9 +14,9 @@ return [
 
     'lee-to/yii-blade' => [
         'paths' => [],
-        'cache_dir' => 'runtime/cache/blade/views',
-        'component_namespaces' => [],
-        'anonymous_component_namespaces' => [],
+        'cachePath' => 'runtime/cache/blade/views',
+        'componentNamespaces' => [],
+        'anonymousComponentNamespaces' => [],
         'directives' => [],
     ],
 ];

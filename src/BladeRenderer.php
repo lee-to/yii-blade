@@ -162,8 +162,10 @@ final class BladeRenderer implements TemplateRendererInterface
      */
     public function renderTemplate(string $template, array $parameters): View
     {
-        if($this->viewFactory !== null) {
-            return $this->viewFactory->make($template, $parameters);
+        $destination = str_replace('.blade.php', '', basename($template));
+
+        if ($this->viewFactory !== null) {
+            return $this->viewFactory->make($destination, $parameters);
         }
 
         $paths = $this->getPaths();
@@ -235,8 +237,6 @@ final class BladeRenderer implements TemplateRendererInterface
                 return 'App';
             }
         });
-
-        $destination = str_replace('.blade.php', '', basename($template));
 
         $this->viewFactory = $factory;
 
